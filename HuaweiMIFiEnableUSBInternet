@@ -1,0 +1,58 @@
+#!/bin/bash
+
+
+huaweiLinkNameStartsWith="wwp0s"
+
+huaweiLinkName=$(eval ifconfig -a | grep -i $huaweiLinkNameStartsWith | awk '{print $1}' | sed 's/Link//')
+
+filterDeviceCommand="lsusb | grep -i huawei"
+
+huaweiDevice=$(eval $filterDeviceCommand)
+
+deviceId=$(eval $filterDeviceCommand | awk '{print $6}')
+
+vendorId=$(eval echo $deviceId | awk -F ':' '{print $1}')
+productId=$(eval echo $deviceId | awk -F ':' '{print $2}')
+
+clear
+echo ""
+echo "Device Found"
+echo "***************"
+echo $huaweiDevice
+echo "***************"
+
+
+echo ""
+echo "Extracted Device ID Is"
+echo "***************"
+echo $deviceId
+echo "***************"
+
+echo ""
+echo "Separated Device Vendor And Product ID Are"
+echo "***************"
+echo "Device Vendor ID is [" $vendorId "]"
+echo "Device Product ID is [" $productId "]"
+echo "***************"
+
+echo ""
+echo "Switching Device to [NetworkCard] Mode"
+echo "***************"
+switchToNetworkModeCommand=$(eval usb_modeswitch -v $vendorId -p $productId -J)
+echo "***************"
+
+echo ""
+echo "***************"
+echo "Run"
+echo "ifconfig -a"
+echo "Check output to see Huawei link name"
+echo "Change huaweiLinkNameStartsWith variable on top"
+echo "As per ifconfig -a output on your PC"
+echo "***************"
+
+
+echo ""
+echo "***************"
+enableHuaweiLANLink=$(eval ip link set $huaweiLinkName up)
+enableDHCPOnHuaweiLANLink=$(eval dhclient $huaweiLinkName)
+echo "***************"
