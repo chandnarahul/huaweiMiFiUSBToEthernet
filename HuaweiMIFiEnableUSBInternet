@@ -43,16 +43,18 @@ echo "***************"
 
 echo ""
 echo "***************"
-echo "Run"
-echo "ifconfig -a"
-echo "Check output to see Huawei link name"
-echo "Change huaweiLinkNameStartsWith variable on top"
-echo "As per ifconfig -a output on your PC"
+enableHuaweiLANLink=$(eval ip link set $huaweiLinkName up)
+enableDHCPOnHuaweiLANLink=$(eval dhclient $huaweiLinkName)
 echo "***************"
 
 
 echo ""
 echo "***************"
-enableHuaweiLANLink=$(eval ip link set $huaweiLinkName up)
-enableDHCPOnHuaweiLANLink=$(eval dhclient $huaweiLinkName)
+echo "Internet should be working now"
+echo "If not then"
+echo "Run"
+echo "ifconfig -a"
+echo "Check output to see Huawei link name"
+echo "Change huaweiLinkNameStartsWith variable on top"
+echo "As per ifconfig -a output on your PC"
 echo "***************"
