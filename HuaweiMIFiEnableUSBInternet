@@ -42,10 +42,27 @@ switchToNetworkModeCommand=$(eval usb_modeswitch -v $vendorId -p $productId -J)
 echo "***************"
 
 echo ""
-echo "***************"
+echo "*****Enabling Netork Interface**********"
 enableHuaweiLANLink=$(eval ip link set $huaweiLinkName up)
+echo "*****Enabling DHCP***********"
 enableDHCPOnHuaweiLANLink=$(eval dhclient $huaweiLinkName)
 echo "***************"
+
+echo "********Securing DNS*********"
+echo "Making sure Huawei is unable to update resolv.conf"
+sudo cp /etc/resolv.conf /etc/backup_resolv_dot_conf
+echo "Original /etc/resolv.conf saved as /etc/backup_resolv_dot_conf"
+sudo chattr -i /etc/resolv.conf
+sudo rm /etc/resolv.conf
+sudo touch /etc/resolv.conf
+sudo chmod 644 /etc/resolv.conf
+echo "Setting Cloudflare as default DNS"
+sudo echo "nameserver 1.1.1.1" > /etc/resolv.conf
+sudo echo "nameserver 1.0.0.1" >> /etc/resolv.conf
+echo "Making sure other softwares are unable to update resolv.conf"
+sudo chmod 444 /etc/resolv.conf
+sudo chattr +i /etc/resolv.conf
+echo "******************************"
 
 
 echo ""
